@@ -79,6 +79,38 @@ export class GymController{
         }
     }
 
+    async createGymRequest(req: Request, res: Response) {
+        if(!req.body) {
+            res.status(400).end();
+            return;
+        }
+
+        if (!req.user) {
+            res.status(401).json({ error: "Utilisateur non authentifié" });
+            return;
+        }
+
+        try {
+            const gym = await this.gymService.createGymRequest({
+                requestedBy: req.user,
+                name: req.body.name,
+                capacity: req.body.capacity,
+                equipments: req.body.equipments,
+                installations: req.body.installations,
+                activities: req.body.activities,
+                openingHours: req.body.openingHours,
+                pricing: req.body.pricing,
+                address: req.body.address,
+                coachCount: req.body.coachCount,
+                contact: req.body.contact,
+                status: "pending"
+            });
+            res.status(201).json(gym);
+        } catch {
+            res.status(409).end(); // CONFLICT
+        }
+    }
+
     buildRouter(): Router {
         const router = Router();
 
@@ -112,6 +144,13 @@ export class GymController{
             sessionMiddleware(this.sessionService),
             roleMiddleware(UserRole.ADMIN),
             this.getGymById.bind(this)
+        );
+
+        router.post('/request',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.OWNER),
+            json(),
+            this.createGymRequest.bind(this)
         );
 
         return router;

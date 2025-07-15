@@ -1,15 +1,21 @@
 import {Mongoose, Model, FilterQuery, isValidObjectId} from "mongoose";
-import {Gym} from "../../../models/gym.interface";
+import {Gym, GymRequest, User} from "../../../models";
 import {gymSchema} from "../schema/gym.schema";
+import {gymRequestSchema} from "../schema/gymrequest.schema";
 
 export type CreateGym = Omit<Gym, '_id' | 'createdAt' | 'updatedAt'>;
 export type UpdateGym = Partial<Omit<Gym, '_id' | 'createdAt'>>;
 
+export type CreateGymRequest = Omit<GymRequest, '_id' | 'createdAt' | 'updatedAt'>;
+export type UpdateGymRequest = Partial<Omit<GymRequest, '_id' | 'createdAt'>>;
+
 export class GymService{
     readonly gymModel: Model<Gym>;
+    readonly gymRequestModel: Model<GymRequest>;
 
     constructor(public readonly connection: Mongoose) {
         this.gymModel = connection.model('Gym', gymSchema());
+        this.gymRequestModel = connection.model('GymRequest', gymRequestSchema());
     }
 
     async findAllGyms(): Promise<Gym[]> {
@@ -27,6 +33,10 @@ export class GymService{
 
     async createGym(gym: CreateGym): Promise<Gym> {
         return this.gymModel.create({...gym});
+    }
+
+    async createGymRequest(gymRequest: CreateGymRequest) {
+        return this.gymRequestModel.create({...gymRequest});
     }
 
     async updateGym(gymId: string, updateData: UpdateGym): Promise<Gym> {
