@@ -83,4 +83,16 @@ export class GymService{
             throw new Error("Salle non trouvé.");
         }
     }
+
+    async deleteGymRequest(gymId: string): Promise<void> {
+        if (!isValidObjectId(gymId)) {
+            throw new Error("ID gym invalide.");
+        }
+
+        const result = await this.gymRequestModel.findByIdAndDelete(gymId);
+
+        if (!result) {
+            throw new Error("Salle non trouvé.");
+        }
+    }
 }

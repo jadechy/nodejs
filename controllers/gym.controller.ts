@@ -112,6 +112,16 @@ export class GymController{
         }
     }
 
+    async deleteGymRequest(req: Request, res: Response) {
+        try {
+            const gymId = req.params.id;
+            await this.gymService.deleteGymRequest(gymId);
+            res.status(204).end()
+        } catch (error) {
+            res.status(400).json({ error: (error as Error).message });
+        }
+    }
+
     async approveGymRequest(req: Request, res: Response){
         try {
             const gymId = req.params.id;
@@ -186,6 +196,12 @@ export class GymController{
             roleMiddleware(UserRole.OWNER),
             json(),
             this.createGymRequest.bind(this)
+        );
+
+        router.delete('/request/:id',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.OWNER),
+            this.deleteGymRequest.bind(this)
         );
 
         return router;
