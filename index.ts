@@ -1,13 +1,14 @@
 import dotenv from 'dotenv';
 import express from "express";
-import {openConnection, SessionService, UserService} from "./service/mongoose";
+import {openConnection, SessionService, UserService, GymService} from "./service/mongoose";
 import {UserRole} from "./models/user.interface";
-import { AuthController, UserController} from "./controllers";
+import { AuthController, UserController, GymController} from "./controllers";
 dotenv.config();
 
 async function startAPI() {
     const connection = await openConnection();
     const userService = new UserService(connection);
+    const gymService = new GymService(connection);
     const sessionService = new SessionService(connection);
     await bootstrapAPI(userService);
     const app = express();
@@ -15,6 +16,8 @@ async function startAPI() {
     app.use('/auth', authController.buildRouter());
     const userController = new UserController(userService, sessionService);
     app.use('/user', userController.buildRouter());
+    const gymController = new GymController(gymService, sessionService);
+    app.use('/gym', gymController.buildRouter());
     app.listen(process.env.PORT, () => console.log(`API listening on port ${process.env.PORT}...`))
 }
 
