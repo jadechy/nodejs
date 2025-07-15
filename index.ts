@@ -1,13 +1,17 @@
 import dotenv from 'dotenv';
 import express from "express";
-import {openConnection, SessionService, UserService} from "./service/mongoose";
+import {openConnection, SessionService, UserService, GymService, ExerciseService, BadgeService, RewardService} from "./service/mongoose";
 import {UserRole} from "./models/user.interface";
-import { AuthController, UserController} from "./controllers";
+import { AuthController, UserController, GymController, ExerciseController, BadgeController, RewardController} from "./controllers";
 dotenv.config();
 
 async function startAPI() {
     const connection = await openConnection();
     const userService = new UserService(connection);
+    const gymService = new GymService(connection);
+    const exerciseService = new ExerciseService(connection);
+    const badgeService = new BadgeService(connection);
+    const rewardService = new RewardService(connection);
     const sessionService = new SessionService(connection);
     await bootstrapAPI(userService);
     const app = express();
@@ -15,6 +19,14 @@ async function startAPI() {
     app.use('/auth', authController.buildRouter());
     const userController = new UserController(userService, sessionService);
     app.use('/user', userController.buildRouter());
+    const gymController = new GymController(gymService, sessionService);
+    app.use('/gym', gymController.buildRouter());
+    const exerciseController = new ExerciseController(exerciseService, sessionService);
+    app.use('/exercise', exerciseController.buildRouter());
+    const badgeController = new BadgeController(badgeService, sessionService);
+    app.use('/badge', badgeController.buildRouter());
+    const rewardController = new RewardController(rewardService, sessionService);
+    app.use('/reward', rewardController.buildRouter());
     app.listen(process.env.PORT, () => console.log(`API listening on port ${process.env.PORT}...`))
 }
 
