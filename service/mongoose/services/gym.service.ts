@@ -1,5 +1,5 @@
 import {Mongoose, Model, FilterQuery, isValidObjectId} from "mongoose";
-import {Gym, GymRequest, User} from "../../../models";
+import {Gym, GymRequest, GymRequestStatus, User} from "../../../models";
 import {gymSchema} from "../schema/gym.schema";
 import {gymRequestSchema} from "../schema/gymrequest.schema";
 
@@ -94,5 +94,16 @@ export class GymService{
         if (!result) {
             throw new Error("Salle non trouvé.");
         }
+    }
+
+    async findAllGymRequestsByUser(userId: string): Promise<GymRequest[]> {
+        return this.gymRequestModel.find({ requestedBy: userId });
+    }
+
+    async findGymRequestsByUserAndStatus(userId: string, status: GymRequestStatus): Promise<GymRequest[]> {
+        return this.gymRequestModel.find({
+            requestedBy: userId,
+            status
+        });
     }
 }

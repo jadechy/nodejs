@@ -142,8 +142,82 @@ export class GymController{
         }
     }
 
+    async getMyGymRequests(req: Request, res: Response) {
+        if (!req.user) {
+            res.status(401).json({ error: "Utilisateur non authentifié" });
+            return;
+        }
+        try {
+            const userId = req.user._id;
+            const gyms = await this.gymService.findAllGymRequestsByUser(userId);
+            res.status(200).json(gyms);
+        } catch (error) {
+            res.status(500).json({ error: (error as Error).message });
+        }
+    }
+
+    async getMyApprovedRequests(req: Request, res: Response) {
+        if (!req.user) {
+            res.status(401).json({ error: "Utilisateur non authentifié" });
+            return;
+        }
+        try {
+            const userId = req.user._id;
+            const approvedRequests = await this.gymService.findGymRequestsByUserAndStatus(userId, GymRequestStatus.APPROVED);
+            res.status(200).json(approvedRequests);
+        } catch (err) {
+            res.status(500).json({ message: 'Erreur lors de la récupération des demandes approuvées.' });
+        }
+    }
+
+    async getMyRejectedRequests(req: Request, res: Response) {
+        if (!req.user) {
+            res.status(401).json({ error: "Utilisateur non authentifié" });
+            return;
+        }
+        try {
+            const userId = req.user._id;
+            const rejectedRequests = await this.gymService.findGymRequestsByUserAndStatus(userId, GymRequestStatus.REJECTED);
+            res.status(200).json(rejectedRequests);
+        } catch (err) {
+            res.status(500).json({ message: 'Erreur lors de la récupération des demandes rejetées.' });
+        }
+    }
+
+
     buildRouter(): Router {
         const router = Router();
+
+        router.post('/request',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.OWNER),
+            json(),
+            this.createGymRequest.bind(this)
+        );
+
+        router.delete('/request/:id',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.OWNER),
+            this.deleteGymRequest.bind(this)
+        );
+
+        router.get('/request',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.OWNER),
+            this.getMyGymRequests.bind(this)
+        );
+
+        router.get('/request/approve',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.OWNER),
+            this.getMyApprovedRequests.bind(this)
+        );
+
+        router.get('/request/reject',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.OWNER),
+            this.getMyRejectedRequests.bind(this)
+        );
 
         router.post('/',
             sessionMiddleware(this.sessionService),
@@ -189,19 +263,6 @@ export class GymController{
             roleMiddleware(UserRole.ADMIN),
             json(),
             this.rejectGymRequest.bind(this)
-        );
-
-        router.post('/request',
-            sessionMiddleware(this.sessionService),
-            roleMiddleware(UserRole.OWNER),
-            json(),
-            this.createGymRequest.bind(this)
-        );
-
-        router.delete('/request/:id',
-            sessionMiddleware(this.sessionService),
-            roleMiddleware(UserRole.OWNER),
-            this.deleteGymRequest.bind(this)
         );
 
         return router;
