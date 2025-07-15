@@ -2,6 +2,7 @@ import {SessionService, GymService} from "../service/mongoose";
 import {Request, Response, Router, json} from "express";
 import {roleMiddleware, sessionMiddleware} from "../middlewares";
 import {UserRole} from "../models/user.interface";
+import { GymRequestStatus } from "../models";
 
 export class GymController{
     constructor(public readonly gymService: GymService,
@@ -103,11 +104,31 @@ export class GymController{
                 address: req.body.address,
                 coachCount: req.body.coachCount,
                 contact: req.body.contact,
-                status: "pending"
+                status: GymRequestStatus.PENDING
             });
             res.status(201).json(gym);
         } catch {
             res.status(409).end(); // CONFLICT
+        }
+    }
+
+    async approveGymRequest(req: Request, res: Response){
+        try {
+            const gymId = req.params.id;
+            await this.gymService.updateGymRequestStatus(gymId, GymRequestStatus.APPROVED);
+            res.status(204).end()
+        } catch (error) {
+            res.status(400).json({ error: (error as Error).message });
+        }
+    }
+
+    async rejectGymRequest(req: Request, res: Response){
+        try {
+            const gymId = req.params.id;
+            await this.gymService.updateGymRequestStatus(gymId, GymRequestStatus.REJECTED);
+            res.status(204).end()
+        } catch (error) {
+            res.status(400).json({ error: (error as Error).message });
         }
     }
 
@@ -144,6 +165,20 @@ export class GymController{
             sessionMiddleware(this.sessionService),
             roleMiddleware(UserRole.ADMIN),
             this.getGymById.bind(this)
+        );
+
+        router.put('/:id/approve',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.ADMIN),
+            json(),
+            this.approveGymRequest.bind(this)
+        );
+
+        router.put('/:id/reject',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.ADMIN),
+            json(),
+            this.rejectGymRequest.bind(this)
         );
 
         router.post('/request',

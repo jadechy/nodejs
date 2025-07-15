@@ -61,6 +61,17 @@ export class GymService{
         return updated;
     }
 
+    async updateGymRequestStatus(gymId: string, status: string): Promise<void> {
+        if(!isValidObjectId(gymId)) {
+            return;
+        }
+        await this.gymRequestModel.updateOne({
+            _id: gymId
+        }, {
+            status: status
+        });
+    }
+
     async deleteGym(gymId: string): Promise<void> {
         if (!isValidObjectId(gymId)) {
             throw new Error("ID gym invalide.");

@@ -1,5 +1,5 @@
-import {Schema, Types, model } from "mongoose";
-import {GymRequest} from "../../../models";
+import {Schema, Types } from "mongoose";
+import {GymRequest, GymRequestStatus} from "../../../models";
 
 export function gymRequestSchema(): Schema<GymRequest> {
     return new Schema<GymRequest>({
@@ -37,12 +37,12 @@ export function gymRequestSchema(): Schema<GymRequest> {
         },
         status: {
             type: String,
-            enum: ['pending', 'approved', 'rejected'],
-            default: 'pending'
+            required: true,
+            enum: Object.values(GymRequestStatus)
         },
     }, {
         timestamps: true, // createdAt + updatedAt
-        collection: "gym",
+        collection: "gymrequest",
         versionKey: false, // désactive le versionning de model
     });
 }
