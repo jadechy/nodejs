@@ -106,4 +106,8 @@ export class GymService{
             status
         });
     }
+
+    async findGymRequestsByStatus(status: GymRequestStatus): Promise<GymRequest[]> {
+        return this.gymRequestModel.find({status});
+    }
 }

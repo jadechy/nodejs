@@ -184,6 +184,18 @@ export class GymController{
         }
     }
 
+    async getAllPendingRequests(req: Request, res: Response) {
+        if (!req.user) {
+            res.status(401).json({ error: "Utilisateur non authentifié" });
+            return;
+        }
+        try {
+            const pendingRequests = await this.gymService.findGymRequestsByStatus( GymRequestStatus.PENDING);
+            res.status(200).json(pendingRequests);
+        } catch (err) {
+            res.status(500).json({ message: 'Erreur lors de la récupération des demandes rejetées.' });
+        }
+    }
 
     buildRouter(): Router {
         const router = Router();
@@ -263,6 +275,12 @@ export class GymController{
             roleMiddleware(UserRole.ADMIN),
             json(),
             this.rejectGymRequest.bind(this)
+        );
+
+        router.get('/request/pending',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.ADMIN),
+            this.getAllPendingRequests.bind(this)
         );
 
         return router;
