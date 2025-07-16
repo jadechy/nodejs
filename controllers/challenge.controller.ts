@@ -98,14 +98,54 @@ export class ChallengeController{
         }
     }
 
+    async getMyChallenges(req: Request, res: Response) {
+        if (!req.user) {
+            res.status(401).json({ error: "Utilisateur non authentifié" });
+            return;
+        }
+        try {
+            const userId = req.user._id;
+            const challenges = await this.challengeService.findAllChallengesByUser(userId);
+            res.status(200).json(challenges);
+        } catch (error) {
+            res.status(500).json({ error: (error as Error).message });
+        }
+    }
+
+    async getMyChallengesByGym(req: Request, res: Response) {
+        if (!req.user) {
+            res.status(401).json({ error: "Utilisateur non authentifié" });
+            return;
+        }
+        try {
+            const gymId = req.params.id;
+            const challenges = await this.challengeService.findAllChallengesByGym(gymId);
+            res.status(200).json(challenges);
+        } catch (error) {
+            res.status(500).json({ error: (error as Error).message });
+        }
+    }
+
     buildRouter(): Router {
         const router = Router();
+
+        router.get('/',
+            sessionMiddleware(this.sessionService),
+            rolesMiddleware([UserRole.OWNER, UserRole.CLIENT]),
+            this.getMyChallenges.bind(this)
+        );
 
         router.post('/owner',
             sessionMiddleware(this.sessionService),
             roleMiddleware(UserRole.OWNER),
             json(),
             this.createChallengeOwner.bind(this)
+        );
+
+        router.get('/owner/:id',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.OWNER),
+            this.getMyChallengesByGym.bind(this)
         );
 
         router.post('/client',

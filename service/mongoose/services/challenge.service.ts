@@ -106,4 +106,12 @@ export class ChallengeService{
             throw new Error("Échec de la suppression.");
         }
     }
+
+    async findAllChallengesByUser(userId: string): Promise<Challenge[]> {
+        return this.challengeModel.find({ createdBy: userId });
+    }
+
+    async findAllChallengesByGym(gymId: string): Promise<Challenge[]> {
+        return this.challengeModel.find({ gym: gymId });
+    }
 }
