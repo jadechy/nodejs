@@ -1,4 +1,4 @@
-import { Model, Mongoose, Types } from "mongoose";
+import { isValidObjectId, Model, Mongoose, Types } from "mongoose";
 import { Challenge } from "../../../models";
 import { challengeSchema } from "../schema/challenge.schema";
 
@@ -41,6 +41,49 @@ export class ChallengeService{
         }
 
         return populated;
+    }
+
+    async updateChallenge(challengeId: string, updateData: UpdateChallenge, userId: string): Promise<Challenge> {
+        if (!isValidObjectId(challengeId)) {
+            throw new Error("ID challenge invalide.");
+        }
+
+        const existingChallenge = await this.challengeModel.findById(challengeId);
+        if (!existingChallenge) {
+            throw new Error("Défi non trouvé.");
+        }
+
+        if ('_id' in updateData) {
+            delete updateData._id;
+        }
+
+        if (existingChallenge.createdBy.toString() !== userId.toString()) {
+            throw new Error("Accès refusé : vous n'êtes pas le créateur de ce défi.");
+        }
+
+        if (updateData.isCollaborative === true && existingChallenge.collaborator === undefined) {
+            updateData.collaborator = [];
+        }
+
+        const updateOps: any = { $set: updateData };
+        if (updateData.isCollaborative === false) {
+            updateOps.$unset = {
+                collaborator: "",
+                nbCollaborator: ""
+            };
+        }
+    
+        const updated = await this.challengeModel.findByIdAndUpdate(
+            challengeId,
+            updateOps,
+            { new: true }
+        );
+    
+        if (!updated) {
+            throw new Error("Échec de la mise à jour.");
+        }
+    
+        return updated;
     }
 
 }

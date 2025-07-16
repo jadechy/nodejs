@@ -1,4 +1,5 @@
 import { roleMiddleware, sessionMiddleware } from "../middlewares";
+import { rolesMiddleware } from "../middlewares/roles.middleware";
 import { UserRole } from "../models";
 import { ChallengeService, SessionService } from "../service/mongoose";
 import {Request, Response, Router, json} from "express";
@@ -60,6 +61,28 @@ export class ChallengeController{
         }
     }
 
+    async updateChallenge(req: Request, res: Response){
+        if (!req.body) {
+            res.status(400).end();
+            return;
+        }
+        if (!req.user) {
+            res.status(401).json({ error: "Utilisateur non authentifié" });
+            return;
+        }
+        try {
+            const challengeId = req.params.id;
+            const updateData = req.body;
+            const userId = req.user._id;
+
+            const updatedChallenge = await this.challengeService.updateChallenge(challengeId, updateData, userId);
+
+            res.status(200).json(updatedChallenge);
+        } catch (error) {
+            res.status(400).json({ error: (error as Error).message });
+        }
+    }
+
     buildRouter(): Router {
         const router = Router();
 
@@ -75,6 +98,13 @@ export class ChallengeController{
             roleMiddleware(UserRole.CLIENT),
             json(),
             this.createChallengeClient.bind(this)
+        );
+
+        router.put('/:id',
+            sessionMiddleware(this.sessionService),
+            rolesMiddleware([UserRole.OWNER, UserRole.CLIENT]),
+            json(),
+            this.updateChallenge.bind(this)
         );
 
         return router;
