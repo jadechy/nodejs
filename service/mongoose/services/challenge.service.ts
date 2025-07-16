@@ -57,10 +57,6 @@ export class ChallengeService{
             throw new Error("Accès refusé : vous n'êtes pas le créateur de ce défi.");
         }
 
-        if (updateData.isCollaborative === true && existingChallenge.collaborator === undefined) {
-            updateData.collaborator = [];
-        }
-
         const updateOps: any = { $set: updateData };
         if (updateData.isCollaborative === false) {
             updateOps.$unset = {

@@ -22,7 +22,8 @@ export class TrainingController{
                 realisedBy: req.user,
                 nbCalorie: req.body.nbCalorie,
                 duration: req.body.duration,
-                performedExercises: req.body.performedExercises
+                performedExercises: req.body.performedExercises,
+                partner: req.body.partner
             });
             res.status(201).json(training);
         } catch {

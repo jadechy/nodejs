@@ -13,7 +13,8 @@ export function trainingSchema(): Schema<Training> {
             type: String,
             required: true
         },
-        performedExercises: [{ type: String }]
+        performedExercises: [{ type: String }],
+        partner: [{ type: Types.ObjectId, ref: 'User' }]
     }, {
         timestamps: true, // createdAt + updatedAt
         collection: "training",

@@ -9,4 +9,5 @@ export interface Training extends Timestamps{
     nbCalorie: number;
     duration: string;
     performedExercises: string[];
+    partner?: User[];
 }

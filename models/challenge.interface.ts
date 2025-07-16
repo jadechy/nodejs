@@ -20,6 +20,5 @@ export interface Challenge extends Timestamps {
   gym?: string | Gym;
   isCollaborative: boolean;
   nbCollaborator?: number;
-  collaborator?: User[];
   reward?: Reward | string
 }

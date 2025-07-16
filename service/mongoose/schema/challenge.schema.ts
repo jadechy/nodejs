@@ -29,11 +29,6 @@ export function challengeSchema(): Schema<Challenge> {
             required: true
         },
         nbCollaborator: {type: Number, required: false},
-        collaborator: {
-            type: [{ type: Types.ObjectId, ref: 'User' }], 
-            required: false,
-            default: undefined
-        },
         reward: { type: Types.ObjectId, ref: 'Reward', required: false},
     }, {
         timestamps: true, // createdAt + updatedAt
