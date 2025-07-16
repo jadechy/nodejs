@@ -17,9 +17,9 @@ export class ChallengeService{
 
         if (challenge.gym) {
             if (typeof challenge.gym === 'string') {
-            gymId = new Types.ObjectId(challenge.gym);
+                gymId = new Types.ObjectId(challenge.gym);
             } else if (typeof challenge.gym === 'object' && '_id' in challenge.gym) {
-            gymId = new Types.ObjectId(challenge.gym._id);
+                gymId = new Types.ObjectId(challenge.gym._id);
             }
         }
         const challengeData: any = {

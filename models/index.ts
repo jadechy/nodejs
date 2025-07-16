@@ -6,3 +6,4 @@ export * from './badge.interface';
 export * from './reward.interface';
 export * from './gymrequest.interface';
 export * from './challenge.interface';
+export * from './share.interface';

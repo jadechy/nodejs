@@ -5,3 +5,4 @@ export * from './exercise.service';
 export * from './badge.service';
 export * from './reward.service';
 export * from './challenge.service';
+export * from './share.service';

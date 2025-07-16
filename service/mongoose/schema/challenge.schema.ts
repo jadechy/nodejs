@@ -29,5 +29,9 @@ export function challengeSchema(): Schema<Challenge> {
             required: false,
             default: undefined
         }
-    })
+    }, {
+        timestamps: true, // createdAt + updatedAt
+        collection: "challenge",
+        versionKey: false, // désactive le versionning de model
+    });
 }
