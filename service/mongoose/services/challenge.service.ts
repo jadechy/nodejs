@@ -12,31 +12,6 @@ export class ChallengeService{
         this.challengeModel = connection.model('Challenge', challengeSchema());
     }
 
-    // async createChallenge(challenge: CreateChallenge): Promise<Challenge> {
-    //     let gymId: Types.ObjectId | undefined;
-
-    //     if (challenge.gym) {
-    //         if (typeof challenge.gym === 'string') {
-    //         gymId = new Types.ObjectId(challenge.gym);
-    //         } else if (typeof challenge.gym === 'object' && '_id' in challenge.gym) {
-    //         gymId = new Types.ObjectId(challenge.gym._id);
-    //         }
-    //     }
-    //     const created = await this.challengeModel.create({
-    //         ...challenge,
-    //         gym: gymId
-    //     });
-
-    //     const populated = await this.challengeModel.findById(created._id)
-    //         .populate('gym');
-        
-    //     if (!populated) {
-    //     throw new Error('Challenge not found after creation');
-    //     }
-
-    //     return populated;
-    // }
-
     async createChallenge(challenge: CreateChallenge): Promise<Challenge> {
         let gymId: Types.ObjectId | undefined;
 
