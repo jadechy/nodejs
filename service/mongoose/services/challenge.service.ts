@@ -13,18 +13,13 @@ export class ChallengeService{
     }
 
     async createChallenge(challenge: CreateChallenge): Promise<Challenge> {
-        let gymId: Types.ObjectId | undefined;
+        const gymId = challenge.gym ? typeof challenge.gym === 'string' ? new Types.ObjectId(challenge.gym) : new Types.ObjectId(challenge.gym._id) : undefined ;
+        const rewardId = challenge.reward ? typeof challenge.reward === 'string' ? new Types.ObjectId(challenge.reward) : new Types.ObjectId(challenge.reward._id) : undefined;
 
-        if (challenge.gym) {
-            if (typeof challenge.gym === 'string') {
-                gymId = new Types.ObjectId(challenge.gym);
-            } else if (typeof challenge.gym === 'object' && '_id' in challenge.gym) {
-                gymId = new Types.ObjectId(challenge.gym._id);
-            }
-        }
         const challengeData: any = {
             ...challenge,
             gym: gymId,
+            reward: rewardId,
         };
 
         if (challenge.isCollaborative === true) {
@@ -34,7 +29,8 @@ export class ChallengeService{
         const created = await this.challengeModel.create(challengeData);
 
         const populated = await this.challengeModel.findById(created._id)
-            .populate('gym');
+            .populate('gym')
+            .populate('reward');
 
         if (!populated) {
             throw new Error('Challenge not found after creation');

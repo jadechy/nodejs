@@ -1,6 +1,7 @@
 import {Timestamps} from "./timestamps";
 import { User } from "./user.interface";
 import { Gym } from "./gym.interface";
+import { Reward } from "./reward.interface";
 
 export enum ChallengeDifficulty {
     BEGINNER = 'Débutant',
@@ -20,4 +21,5 @@ export interface Challenge extends Timestamps {
   isCollaborative: boolean;
   nbCollaborator?: number;
   collaborator?: User[];
+  reward?: Reward | string
 }

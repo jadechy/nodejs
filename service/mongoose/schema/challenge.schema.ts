@@ -33,7 +33,8 @@ export function challengeSchema(): Schema<Challenge> {
             type: [{ type: Types.ObjectId, ref: 'User' }], 
             required: false,
             default: undefined
-        }
+        },
+        reward: { type: Types.ObjectId, ref: 'Reward', required: false},
     }, {
         timestamps: true, // createdAt + updatedAt
         collection: "challenge",

@@ -28,11 +28,12 @@ export class ChallengeController{
                 createdBy: req.user,
                 gym: req.body.gym?._id || req.body.gym,
                 isCollaborative: req.body.isCollaborative,
-                nbCollaborator: req.body.nbCollaborator
+                nbCollaborator: req.body.nbCollaborator,
+                reward: req.body.reward?._id || req.body.reward
             });
             res.status(201).json(challenge);
-        } catch {
-            res.status(409).end(); // CONFLICT
+        } catch(error) {
+            res.status(409).end();
         }
     }
 
@@ -55,7 +56,8 @@ export class ChallengeController{
                 difficulty: req.body.difficulty,
                 createdBy: req.user,
                 isCollaborative: req.body.isCollaborative,
-                nbCollaborator: req.body.nbCollaborator
+                nbCollaborator: req.body.nbCollaborator,
+                reward: req.body.reward?._id || req.body.reward
             });
             res.status(201).json(challenge);
         } catch {
