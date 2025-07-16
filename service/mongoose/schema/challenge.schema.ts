@@ -1,5 +1,5 @@
 import {Schema, Types} from "mongoose";
-import { Challenge } from "../../../models";
+import { Challenge, ChallengeDifficulty } from "../../../models";
 
 export function challengeSchema(): Schema<Challenge> {
     return new Schema<Challenge>({
@@ -16,6 +16,11 @@ export function challengeSchema(): Schema<Challenge> {
         duration: {
             type: String,
             required: true
+        },
+        difficulty: {
+            type: String,
+            required: true,
+            enum: Object.values(ChallengeDifficulty)
         },
         createdBy: { type: Types.ObjectId, ref: 'User', required: true },
         gym: { type: Types.ObjectId, ref: 'Gym', required: false},

@@ -114,4 +114,25 @@ export class ChallengeService{
     async findAllChallengesByGym(gymId: string): Promise<Challenge[]> {
         return this.challengeModel.find({ gym: gymId });
     }
+
+    async findAllChallenges(filters?: {
+        difficulty?: string;
+        exercise?: string;
+    }): Promise<Challenge[]> {
+        const query: any = {};
+
+        if (filters?.difficulty) {
+            query.difficulty = filters.difficulty;
+        }
+
+        if (filters?.exercise) {
+            query.recommendedExercises = { $in: [filters.exercise] };
+        }
+
+        return this.challengeModel
+            .find(query)
+            .populate('createdBy')
+            .populate('gym');
+    }
+
 }

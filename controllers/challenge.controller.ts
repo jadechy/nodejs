@@ -24,6 +24,7 @@ export class ChallengeController{
                 goals: req.body.goals,
                 recommendedExercises: req.body.recommendedExercises,
                 duration: req.body.duration,
+                difficulty: req.body.difficulty,
                 createdBy: req.user,
                 gym: req.body.gym?._id || req.body.gym,
                 isCollaborative: req.body.isCollaborative,
@@ -51,6 +52,7 @@ export class ChallengeController{
                 goals: req.body.goals,
                 recommendedExercises: req.body.recommendedExercises,
                 duration: req.body.duration,
+                difficulty: req.body.difficulty,
                 createdBy: req.user,
                 isCollaborative: req.body.isCollaborative,
                 nbCollaborator: req.body.nbCollaborator
@@ -126,6 +128,27 @@ export class ChallengeController{
         }
     }
 
+    async exploreChallenge(req: Request, res: Response) {
+        if (!req.user) {
+            res.status(401).json({ error: "Utilisateur non authentifié" });
+            return;
+        }
+
+        const { difficulty, exercise, duration } = req.query;
+
+        try {
+            const filters = {
+                difficulty: difficulty as string | undefined,
+                exercise: exercise as string | undefined
+            };
+
+            const challenges = await this.challengeService.findAllChallenges(filters);
+            res.status(200).json(challenges);
+        } catch (error) {
+            res.status(500).json({ error: (error as Error).message });
+        }
+    }
+
     buildRouter(): Router {
         const router = Router();
 
@@ -133,6 +156,12 @@ export class ChallengeController{
             sessionMiddleware(this.sessionService),
             rolesMiddleware([UserRole.OWNER, UserRole.CLIENT]),
             this.getMyChallenges.bind(this)
+        );
+
+        router.get('/explore',
+            sessionMiddleware(this.sessionService),
+            rolesMiddleware([UserRole.OWNER, UserRole.CLIENT]),
+            this.exploreChallenge.bind(this)
         );
 
         router.post('/owner',
