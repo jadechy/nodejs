@@ -86,4 +86,24 @@ export class ChallengeService{
         return updated;
     }
 
+    async deleteChallenge(challengeId: string, userId: string): Promise<void> {
+        if (!isValidObjectId(challengeId)) {
+            throw new Error("ID gym invalide.");
+        }
+
+        const challenge = await this.challengeModel.findById(challengeId);
+        if (!challenge) {
+            throw new Error("Défi non trouvé.");
+        }
+
+        if (challenge.createdBy.toString() !== userId.toString()) {
+            throw new Error("Accès refusé : vous n'êtes pas le créateur de ce défi.");
+        }
+    
+        const result = await this.challengeModel.findByIdAndDelete(challengeId);
+    
+        if (!result) {
+            throw new Error("Échec de la suppression.");
+        }
+    }
 }

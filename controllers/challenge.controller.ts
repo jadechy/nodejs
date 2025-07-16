@@ -83,6 +83,21 @@ export class ChallengeController{
         }
     }
 
+    async deleteChallenge(req: Request, res: Response) {
+        if (!req.user) {
+            res.status(401).json({ error: "Utilisateur non authentifié" });
+            return;
+        }
+        try {
+            const challengeId = req.params.id;
+            const userId = req.user._id;
+            await this.challengeService.deleteChallenge(challengeId, userId);
+            res.status(204).end()
+        } catch (error) {
+            res.status(400).json({ error: (error as Error).message });
+        }
+    }
+
     buildRouter(): Router {
         const router = Router();
 
@@ -105,6 +120,12 @@ export class ChallengeController{
             rolesMiddleware([UserRole.OWNER, UserRole.CLIENT]),
             json(),
             this.updateChallenge.bind(this)
+        );
+
+        router.delete('/:id',
+            sessionMiddleware(this.sessionService),
+            rolesMiddleware([UserRole.OWNER, UserRole.CLIENT]),
+            this.deleteChallenge.bind(this)
         );
 
         return router;
