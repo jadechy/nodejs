@@ -4,10 +4,10 @@ import { Training } from "./training.interface";
 import { Challenge } from "./challenge.interface";
 
 export enum ChallengeMatchStatus {
-    PENDING = 'PENDING',
-    ACCEPTED = 'ACCEPTED',
-    REFUSED = 'REFUSED',
-    COMPLETED = 'COMPLETED'
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  REFUSED = "REFUSED",
+  COMPLETED = "COMPLETED",
 }
 
 export interface ChallengeMatch extends Timestamps {
@@ -15,7 +15,7 @@ export interface ChallengeMatch extends Timestamps {
   challenge: Challenge | string;
   challenger: User | string;
   opponent: User | string;
-  challengerTraining?: Training | string; 
+  challengerTraining?: Training | string;
   opponentTraining?: Training | string;
   status: ChallengeMatchStatus;
   winner?: User | string;

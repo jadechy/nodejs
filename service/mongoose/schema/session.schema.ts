@@ -1,19 +1,22 @@
-import {Schema} from "mongoose";
-import {Session} from "../../../models/session.interface";
+import { Schema } from "mongoose";
+import { Session } from "../../../models/session.interface";
 
-export function sessionSchema(): Schema<Session> {
-    return new Schema<Session>({
-        expirationDate: {
-            type: Date,
-        },
-        user: {
-            type: Schema.Types.ObjectId,
-            ref: 'User', // nom du model à charger
-            required: true
-        }
-    }, {
-        timestamps: true, // createdAt + updatedAt
-        collection: "sessions",
-        versionKey: false, // désactive le versionning de model
-    });
-}
+export const sessionSchema = (): Schema<Session> => {
+  return new Schema<Session>(
+    {
+      expirationDate: {
+        type: Date,
+      },
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+    },
+    {
+      timestamps: true,
+      collection: "sessions",
+      versionKey: false,
+    }
+  );
+};
