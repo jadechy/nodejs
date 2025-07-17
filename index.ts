@@ -15,7 +15,7 @@ async function startAPI() {
     const rewardService = new RewardService(connection);
     const challengeService = new ChallengeService(connection);
     const shareService = new ShareService(connection);
-    const trainingService = new TrainingService(connection);
+    const trainingService = new TrainingService(connection, userService);
     const challengeMatchService = new ChallengeMatchService(connection);
     const sessionService = new SessionService(connection);
     await bootstrapAPI(userService);

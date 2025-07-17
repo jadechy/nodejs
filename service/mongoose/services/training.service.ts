@@ -3,6 +3,7 @@ import { Challenge, Training, User } from "../../../models";
 import { trainingSchema } from "../schema/training.schema";
 import { challengeSchema } from "../schema/challenge.schema";
 import { userSchema } from "../schema/user.schema";
+import { UserService } from "./user.service";
 
 export type CreateTraining = Omit<Training, '_id' | 'createdAt' | 'updatedAt'>;
 
@@ -11,8 +12,8 @@ export class TrainingService{
     readonly challengeModel: Model<Challenge>;
     readonly userModel: Model<User>;
     
-    constructor(public readonly connection: Mongoose) {
-        this.trainingModel = connection.model('Training', trainingSchema());
+    constructor(public readonly connection: Mongoose, public readonly userService: UserService) {
+        this.trainingModel = connection.models.Training || connection.model('Training', trainingSchema());
         this.challengeModel = connection.models.Challenge || connection.model('Challenge', challengeSchema());
         this.userModel = connection.models.User || connection.model('User', userSchema());
     }
@@ -66,6 +67,12 @@ export class TrainingService{
                     partnerId,
                     { $addToSet: { rewards: rewardId } }
                 );
+            }
+
+            await this.userService.checkAndAssignBadges(userId);
+
+            for (const partnerId of partnerIds) {
+                await this.userService.checkAndAssignBadges(partnerId);
             }
         }
 
