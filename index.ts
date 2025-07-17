@@ -29,7 +29,7 @@ import {
 
 dotenv.config();
 
-async function startAPI() {
+const startAPI = async () => {
   const connection = await openConnection();
   const userService = new UserService(connection);
   const gymService = new GymService(connection);
@@ -78,9 +78,9 @@ async function startAPI() {
   app.listen(process.env.PORT, () =>
     console.log(`API listening on port ${process.env.PORT}...`)
   );
-}
+};
 
-async function bootstrapAPI(userService: UserService) {
+const bootstrapAPI = async (userService: UserService) => {
   if (typeof process.env.GYM_ROOT_EMAIL === "undefined") {
     throw new Error("GYM_ROOT_EMAIL is not defined");
   }
@@ -100,6 +100,6 @@ async function bootstrapAPI(userService: UserService) {
       badges: [],
     });
   }
-}
+};
 
 startAPI().catch(console.error);
