@@ -204,9 +204,9 @@ export class ChallengeMatchService{
                 ? new Types.ObjectId(match.challenge.reward)
                 : new Types.ObjectId(match.challenge.reward._id);
 
-            const user = await this.userModel.findByIdAndUpdate(
+            await this.userModel.findByIdAndUpdate(
                 winner,
-                { $addToSet: { rewards: rewardId } },
+                { $push: { rewards: rewardId } },
                 { new: true }
             );
         }
