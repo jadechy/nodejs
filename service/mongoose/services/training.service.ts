@@ -1,17 +1,20 @@
 import { Model, Mongoose, Types } from "mongoose";
-import { Challenge, Training } from "../../../models";
+import { Challenge, Training, User } from "../../../models";
 import { trainingSchema } from "../schema/training.schema";
 import { challengeSchema } from "../schema/challenge.schema";
+import { userSchema } from "../schema/user.schema";
 
 export type CreateTraining = Omit<Training, '_id' | 'createdAt' | 'updatedAt'>;
 
 export class TrainingService{
     readonly trainingModel: Model<Training>;
     readonly challengeModel: Model<Challenge>;
+    readonly userModel: Model<User>;
     
     constructor(public readonly connection: Mongoose) {
         this.trainingModel = connection.model('Training', trainingSchema());
         this.challengeModel = connection.models.Challenge || connection.model('Challenge', challengeSchema());
+        this.userModel = connection.models.User || connection.model('User', userSchema());
     }
 
     async createTraining(training: CreateTraining): Promise<Training> {
@@ -42,6 +45,29 @@ export class TrainingService{
         };
 
         const created = await this.trainingModel.create(trainingData);
+
+        const isValidDuration = parseInt(training.duration) <= parseInt(challenge.duration);
+        const allExercisesPresent = challenge.recommendedExercises.every(ex =>
+            training.performedExercises.includes(ex)
+        );
+
+        if (isValidDuration && allExercisesPresent && challenge.reward) {
+            const rewardId = typeof challenge.reward === 'string'
+                ? new Types.ObjectId(challenge.reward)
+                : new Types.ObjectId(challenge.reward._id);
+
+            await this.userModel.findByIdAndUpdate(
+                userId,
+                { $push: { rewards: rewardId } }
+            );
+
+            for (const partnerId of partnerIds) {
+                await this.userModel.findByIdAndUpdate(
+                    partnerId,
+                    { $addToSet: { rewards: rewardId } }
+                );
+            }
+        }
 
         const populated = await this.trainingModel.findById(created._id)
             .populate('challenge')
