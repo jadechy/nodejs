@@ -22,10 +22,6 @@ export class ChallengeService{
             reward: rewardId,
         };
 
-        if (challenge.isCollaborative === true) {
-            challengeData.collaborator = [];
-        }
-        
         const created = await this.challengeModel.create(challengeData);
 
         const populated = await this.challengeModel.findById(created._id)
@@ -60,7 +56,6 @@ export class ChallengeService{
         const updateOps: any = { $set: updateData };
         if (updateData.isCollaborative === false) {
             updateOps.$unset = {
-                collaborator: "",
                 nbCollaborator: ""
             };
         }

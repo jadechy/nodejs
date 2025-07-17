@@ -25,7 +25,12 @@ export class UserService {
     }
 
     async createUser(user: CreateUser): Promise<User> {
-        return this.userModel.create({...user, password: sha256(user.password)});
+        return this.userModel.create({
+                ...user, 
+                password: sha256(user.password),
+                rewards: user.rewards ?? [],
+                badges: user.badges ?? []
+            });
     }
 
     async updateUser(userId: string, updateData: UpdateUser): Promise<User> {

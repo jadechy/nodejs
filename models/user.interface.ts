@@ -1,3 +1,5 @@
+import { Badge } from "./badge.interface";
+import { Reward } from "./reward.interface";
 import {Timestamps} from "./timestamps";
 
 export enum UserRole {
@@ -24,4 +26,6 @@ export interface User extends Timestamps {
     email: string;
     password: string;
     role: UserRole;
+    rewards: Reward[];
+    badges: Badge[];
 }

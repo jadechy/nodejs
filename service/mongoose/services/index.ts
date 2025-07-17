@@ -7,3 +7,4 @@ export * from './reward.service';
 export * from './challenge.service';
 export * from './share.service';
 export * from './training.service';
+export * from './challengematch.service';
