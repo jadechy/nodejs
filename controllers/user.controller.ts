@@ -20,7 +20,9 @@ export class UserController {
                 role: req.body.role,
                 password: req.body.password,
                 lastName: req.body.lastName,
-                firstName: req.body.firstName
+                firstName: req.body.firstName,
+                rewards: [],
+                badges: []
             });
             res.status(201).json(user);
         } catch {

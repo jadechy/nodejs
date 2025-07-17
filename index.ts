@@ -1,8 +1,9 @@
 import dotenv from 'dotenv';
 import express from "express";
-import {openConnection, SessionService, UserService, GymService, ExerciseService, BadgeService, RewardService} from "./service/mongoose";
+import {openConnection, SessionService, UserService, GymService, ExerciseService, BadgeService, RewardService, ChallengeService, ShareService, TrainingService, ChallengeMatchService} from "./service/mongoose";
 import {UserRole} from "./models/user.interface";
-import { AuthController, UserController, GymController, ExerciseController, BadgeController, RewardController} from "./controllers";
+import { AuthController, UserController, GymController, ExerciseController, BadgeController, RewardController, ChallengeController, ShareController, TrainingController, ChallengeMatchController} from "./controllers";
+
 dotenv.config();
 
 async function startAPI() {
@@ -12,6 +13,10 @@ async function startAPI() {
     const exerciseService = new ExerciseService(connection);
     const badgeService = new BadgeService(connection);
     const rewardService = new RewardService(connection);
+    const challengeService = new ChallengeService(connection);
+    const shareService = new ShareService(connection);
+    const trainingService = new TrainingService(connection, userService);
+    const challengeMatchService = new ChallengeMatchService(connection);
     const sessionService = new SessionService(connection);
     await bootstrapAPI(userService);
     const app = express();
@@ -27,6 +32,14 @@ async function startAPI() {
     app.use('/badge', badgeController.buildRouter());
     const rewardController = new RewardController(rewardService, sessionService);
     app.use('/reward', rewardController.buildRouter());
+    const challengeController = new ChallengeController(challengeService, sessionService);
+    app.use('/challenge', challengeController.buildRouter());
+    const shareController = new ShareController(shareService, sessionService);
+    app.use('/share', shareController.buildRouter());
+    const trainingController = new TrainingController(trainingService, sessionService);
+    app.use('/training', trainingController.buildRouter());
+    const challengeMatchController = new ChallengeMatchController(challengeMatchService, sessionService);
+    app.use('/match', challengeMatchController.buildRouter());
     app.listen(process.env.PORT, () => console.log(`API listening on port ${process.env.PORT}...`))
 }
 
@@ -44,7 +57,9 @@ async function bootstrapAPI(userService: UserService) {
             lastName: 'root',
             password: process.env.GYM_ROOT_PASSWORD,
             email: process.env.GYM_ROOT_EMAIL,
-            role: UserRole.ADMIN
+            role: UserRole.ADMIN,
+            rewards: [],
+            badges: []
         });
     }
 }

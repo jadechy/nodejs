@@ -9,7 +9,7 @@ export class BadgeService{
     readonly badgeModel: Model<Badge>;
 
     constructor(public readonly connection: Mongoose) {
-        this.badgeModel = connection.model('Badge', badgeSchema());
+        this.badgeModel = connection.models.Badge || connection.model('Badge', badgeSchema());
     }
 
     async findAllBadges(): Promise<Badge[]> {

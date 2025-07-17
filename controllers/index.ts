@@ -4,3 +4,7 @@ export * from './gym.controller';
 export * from './exercise.controller';
 export * from './badge.controller';
 export * from './reward.controller';
+export * from './challenge.controller';
+export * from './share.controller';
+export * from './training.controller';
+export * from './challengematch.controller';

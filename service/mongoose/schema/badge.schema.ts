@@ -12,7 +12,7 @@ export function badgeSchema(): Schema<Badge> {
             required: true
         },
         condition: {
-            type: String,
+            type: Number,
             required: true
         }
     }, {

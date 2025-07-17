@@ -42,7 +42,9 @@ export class AuthController {
                 role: UserRole.CLIENT,
                 password: req.body.password,
                 lastName: req.body.lastName,
-                firstName: req.body.firstName
+                firstName: req.body.firstName,
+                rewards: [],
+                badges: []
             });
             res.status(201).json(user);
         } catch {

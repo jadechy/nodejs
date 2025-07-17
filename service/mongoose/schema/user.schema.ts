@@ -1,4 +1,4 @@
-import {Schema} from "mongoose";
+import {Schema, Types} from "mongoose";
 import {User, UserRole} from "../../../models/user.interface";
 
 export function userSchema(): Schema<User> {
@@ -24,7 +24,9 @@ export function userSchema(): Schema<User> {
             type: String,
             required: true,
             enum: Object.values(UserRole)
-        }
+        },
+        rewards: [{ type: Types.ObjectId, ref: 'Reward' }],
+        badges: [{ type: Types.ObjectId, ref: 'Badge' }]
     }, {
         timestamps: true, // createdAt + updatedAt
         collection: "users",
