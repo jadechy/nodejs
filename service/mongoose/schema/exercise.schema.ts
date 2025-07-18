@@ -6,16 +6,21 @@ export const exerciseSchema = (): Schema<Exercise> => {
     name: {
       type: String,
       required: true,
+      minlength: 2,
+      maxlength: 100,
     },
     description: {
       type: String,
       required: true,
+      minlength: 10,
+      maxlength: 1000,
     },
-    targetMuscle: [{ type: String }],
+    targetMuscle: [{ type: String, minlength: 2, maxlength: 50 }],
+    // TODO : Add enum
     difficulty: {
       type: String,
       required: true,
     },
-    equipments: [{ type: String }],
+    equipments: [{ type: String, minlength: 2, maxlength: 50 }],
   });
 };

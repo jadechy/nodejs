@@ -9,12 +9,14 @@ export const trainingSchema = (): Schema<Training> => {
       nbCalorie: {
         type: Number,
         required: true,
+        min: 0,
+        max: 100000,
       },
       duration: {
         type: String,
         required: true,
       },
-      performedExercises: [{ type: String }],
+      performedExercises: [{ type: String, minlength: 1, maxlength: 100 }],
       partner: [{ type: Types.ObjectId, ref: "User" }],
     },
     {

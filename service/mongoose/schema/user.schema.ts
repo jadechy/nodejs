@@ -7,20 +7,28 @@ export const userSchema = (): Schema<User> => {
       lastName: {
         type: String,
         required: true,
+        minlength: 2,
+        maxlength: 50,
       },
       firstName: {
         type: String,
         required: true,
+        minlength: 2,
+        maxlength: 50,
       },
       email: {
         type: String,
         required: true,
         unique: true,
+        lowercase: true,
+        trim: true,
       },
       password: {
         type: String,
         required: true,
+        minlength: 6,
       },
+      // TODO : add birthday
       role: {
         type: String,
         required: true,
