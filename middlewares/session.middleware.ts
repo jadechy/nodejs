@@ -9,7 +9,7 @@ declare module "express" {
   }
 }
 
-export const sessionMiddleware = (
+export const authenticateSession = (
   sessionService: SessionService
 ): RequestHandler => {
   return async (req: Request, res, next) => {
@@ -32,6 +32,6 @@ export const sessionMiddleware = (
     }
     req.session = session;
     req.user = session.user as User;
-    next(); // permet d'aller au middleware OU à la route
+    next();
   };
 };

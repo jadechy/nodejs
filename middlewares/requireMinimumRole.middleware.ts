@@ -1,7 +1,7 @@
 import { Request, RequestHandler } from "express";
 import { UserRole, getUserRoleLevel } from "../models/user.interface";
 
-export const roleMiddleware = (role: UserRole): RequestHandler => {
+export const requireMinimumRole = (role: UserRole): RequestHandler => {
   const targetRoleLevel = getUserRoleLevel(role);
   return async (req: Request, res, next) => {
     if (!req.user) {
