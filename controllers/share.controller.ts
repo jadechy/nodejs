@@ -9,7 +9,7 @@ export class ShareController {
     public readonly sessionService: SessionService
   ) {}
 
-  async createShare(req: Request, res: Response) {
+  createShare = async (req: Request, res: Response) => {
     if (!req.body) {
       res.status(400).end();
       return;
@@ -26,11 +26,11 @@ export class ShareController {
       });
       res.status(201).json(share);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
-  }
+  };
 
-  async getAllMyShare(req: Request, res: Response) {
+  getAllMyShare = async (req: Request, res: Response) => {
     if (!req.user) {
       res.status(401).json({ error: "Utilisateur non authentifié" });
       return;
@@ -40,11 +40,11 @@ export class ShareController {
       const shares = await this.shareService.getAllMyShare(userId);
       res.status(201).json(shares);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
-  }
+  };
 
-  buildRouter(): Router {
+  buildRouter = (): Router => {
     const router = Router();
 
     router.post(
@@ -63,5 +63,5 @@ export class ShareController {
     );
 
     return router;
-  }
+  };
 }

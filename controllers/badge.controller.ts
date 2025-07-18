@@ -9,7 +9,7 @@ export class BadgeController {
     public readonly sessionService: SessionService
   ) {}
 
-  async createBadge(req: Request, res: Response) {
+  createBadge = async (req: Request, res: Response) => {
     if (!req.body) {
       res.status(400).end();
       return;
@@ -22,11 +22,11 @@ export class BadgeController {
       });
       res.status(201).json(badge);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
-  }
+  };
 
-  async updateBadge(req: Request, res: Response) {
+  updateBadge = async (req: Request, res: Response) => {
     try {
       const badgeId = req.params.id;
       const updateData = req.body;
@@ -40,9 +40,9 @@ export class BadgeController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async deleteBadge(req: Request, res: Response) {
+  deleteBadge = async (req: Request, res: Response) => {
     try {
       const badgeId = req.params.id;
       await this.badgeService.deleteBadge(badgeId);
@@ -50,18 +50,18 @@ export class BadgeController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async getAllBadges(req: Request, res: Response) {
+  getAllBadges = async (_req: Request, res: Response) => {
     try {
       const badges = await this.badgeService.findAllBadges();
       res.status(200).json(badges);
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async getBadgeById(req: Request, res: Response) {
+  getBadgeById = async (req: Request, res: Response) => {
     try {
       const badgeId = req.params.id;
       const badge = await this.badgeService.findBadgeById(badgeId);
@@ -75,9 +75,9 @@ export class BadgeController {
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  buildRouter(): Router {
+  buildRouter = (): Router => {
     const router = Router();
 
     router.post(
@@ -118,5 +118,5 @@ export class BadgeController {
     );
 
     return router;
-  }
+  };
 }

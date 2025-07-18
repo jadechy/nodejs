@@ -9,7 +9,7 @@ export class UserController {
     public readonly sessionService: SessionService
   ) {}
 
-  async createUser(req: Request, res: Response) {
+  createUser = async (req: Request, res: Response) => {
     if (
       !req.body ||
       !req.body.email ||
@@ -33,11 +33,10 @@ export class UserController {
       });
       res.status(201).json(user);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
-  }
-
-  async updateUser(req: Request, res: Response) {
+  };
+  updateUser = async (req: Request, res: Response) => {
     try {
       const userId = req.params.id;
       const updateData = req.body;
@@ -48,9 +47,9 @@ export class UserController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async deleteUser(req: Request, res: Response) {
+  deleteUser = async (req: Request, res: Response) => {
     try {
       const userId = req.params.id;
       await this.userService.deleteUser(userId);
@@ -58,9 +57,9 @@ export class UserController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async updateUserRole(req: Request, res: Response) {
+  updateUserRole = async (req: Request, res: Response) => {
     try {
       const userId = req.params.id;
       const userRole = req.body.role;
@@ -69,9 +68,9 @@ export class UserController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  buildRouter(): Router {
+  buildRouter = (): Router => {
     const router = Router();
     router.post(
       "/",
@@ -105,5 +104,5 @@ export class UserController {
     );
 
     return router;
-  }
+  };
 }

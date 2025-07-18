@@ -9,7 +9,7 @@ export class AuthController {
     public readonly sessionService: SessionService
   ) {}
 
-  async login(req: Request, res: Response) {
+  login = async (req: Request, res: Response) => {
     if (!req.body || !req.body.email || !req.body.password) {
       res.status(400).end();
       return;
@@ -27,11 +27,11 @@ export class AuthController {
       expirationDate: new Date(Date.now() + 1_296_000_000), // eq NOW + 15 jours en millis 15 * 86_400 * 1000
     });
     res.status(201).json(session);
-  }
+  };
 
-  async me(req: Request, res: Response) {
+  me = async (req: Request, res: Response) => {
     res.json(req.user);
-  }
+  };
 
   async subscribe(req: Request, res: Response) {
     if (
@@ -56,11 +56,11 @@ export class AuthController {
       });
       res.status(201).json(user);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
   }
 
-  buildRouter(): Router {
+  buildRouter = (): Router => {
     const router = Router();
     router.post("/login", json(), this.login.bind(this));
     router.post("/subscribe", json(), this.subscribe.bind(this));
@@ -70,5 +70,5 @@ export class AuthController {
       this.me.bind(this)
     );
     return router;
-  }
+  };
 }

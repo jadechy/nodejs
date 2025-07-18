@@ -9,7 +9,7 @@ export class ChallengeMatchController {
     public readonly sessionService: SessionService
   ) {}
 
-  async createChallengeMatch(req: Request, res: Response) {
+  createChallengeMatch = async (req: Request, res: Response) => {
     if (!req.body) {
       res.status(400).end();
       return;
@@ -30,9 +30,9 @@ export class ChallengeMatchController {
     } catch (error) {
       res.status(409).end();
     }
-  }
+  };
 
-  async getMyMatchRequests(req: Request, res: Response) {
+  getMyMatchRequests = async (req: Request, res: Response) => {
     if (!req.user) {
       res.status(401).json({ error: "Utilisateur non authentifié" });
       return;
@@ -46,9 +46,9 @@ export class ChallengeMatchController {
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async acceptMatchRequest(req: Request, res: Response) {
+  acceptMatchRequest = async (req: Request, res: Response) => {
     try {
       const matchId = req.params.id;
       await this.challengeMatchService.updateGymRequestStatus(
@@ -59,9 +59,9 @@ export class ChallengeMatchController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async refuseMatchRequest(req: Request, res: Response) {
+  refuseMatchRequest = async (req: Request, res: Response) => {
     try {
       const matchId = req.params.id;
       await this.challengeMatchService.updateGymRequestStatus(
@@ -72,9 +72,9 @@ export class ChallengeMatchController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async addTrainingToMatch(req: Request, res: Response) {
+  addTrainingToMatch = async (req: Request, res: Response) => {
     if (!req.body) {
       res.status(400).end();
       return;
@@ -96,9 +96,9 @@ export class ChallengeMatchController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async computeMatchWinner(req: Request, res: Response) {
+  computeMatchWinner = async (req: Request, res: Response) => {
     if (!req.user) {
       res.status(401).json({ error: "Utilisateur non authentifié" });
       return;
@@ -116,9 +116,9 @@ export class ChallengeMatchController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  buildRouter(): Router {
+  buildRouter = (): Router => {
     const router = Router();
 
     router.post(
@@ -169,5 +169,5 @@ export class ChallengeMatchController {
     );
 
     return router;
-  }
+  };
 }

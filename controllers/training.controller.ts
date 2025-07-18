@@ -9,7 +9,7 @@ export class TrainingController {
     public readonly sessionService: SessionService
   ) {}
 
-  async createTraining(req: Request, res: Response) {
+  createTraining = async (req: Request, res: Response) => {
     if (!req.body) {
       res.status(400).end();
       return;
@@ -29,11 +29,11 @@ export class TrainingController {
       });
       res.status(201).json(training);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
-  }
+  };
 
-  buildRouter(): Router {
+  buildRouter = (): Router => {
     const router = Router();
 
     router.post(
@@ -45,5 +45,5 @@ export class TrainingController {
     );
 
     return router;
-  }
+  };
 }

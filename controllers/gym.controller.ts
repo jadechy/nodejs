@@ -10,7 +10,7 @@ export class GymController {
     public readonly sessionService: SessionService
   ) {}
 
-  async createGym(req: Request, res: Response) {
+  createGym = async (req: Request, res: Response) => {
     if (!req.body) {
       res.status(400).end();
       return;
@@ -30,11 +30,11 @@ export class GymController {
       });
       res.status(201).json(gym);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
-  }
+  };
 
-  async updateGym(req: Request, res: Response) {
+  updateGym = async (req: Request, res: Response) => {
     try {
       const gymId = req.params.id;
       const updateData = req.body;
@@ -45,9 +45,9 @@ export class GymController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async deleteGym(req: Request, res: Response) {
+  deleteGym = async (req: Request, res: Response) => {
     try {
       const gymId = req.params.id;
       await this.gymService.deleteGym(gymId);
@@ -55,18 +55,18 @@ export class GymController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async getAllGyms(req: Request, res: Response) {
+  getAllGyms = async (_req: Request, res: Response) => {
     try {
       const gyms = await this.gymService.findAllGyms();
       res.status(200).json(gyms);
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async getGymById(req: Request, res: Response) {
+  getGymById = async (req: Request, res: Response) => {
     try {
       const gymId = req.params.id;
       const gym = await this.gymService.findGymById(gymId);
@@ -80,9 +80,9 @@ export class GymController {
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async createGymRequest(req: Request, res: Response) {
+  createGymRequest = async (req: Request, res: Response) => {
     if (!req.body) {
       res.status(400).end();
       return;
@@ -110,11 +110,11 @@ export class GymController {
       });
       res.status(201).json(gym);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
-  }
+  };
 
-  async deleteGymRequest(req: Request, res: Response) {
+  deleteGymRequest = async (req: Request, res: Response) => {
     try {
       const gymId = req.params.id;
       await this.gymService.deleteGymRequest(gymId);
@@ -122,9 +122,9 @@ export class GymController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async approveGymRequest(req: Request, res: Response) {
+  approveGymRequest = async (req: Request, res: Response) => {
     try {
       const gymId = req.params.id;
       await this.gymService.updateGymRequestStatus(
@@ -135,9 +135,9 @@ export class GymController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async rejectGymRequest(req: Request, res: Response) {
+  rejectGymRequest = async (req: Request, res: Response) => {
     try {
       const gymId = req.params.id;
       await this.gymService.updateGymRequestStatus(
@@ -148,9 +148,9 @@ export class GymController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async getMyGymRequests(req: Request, res: Response) {
+  getMyGymRequests = async (req: Request, res: Response) => {
     if (!req.user) {
       res.status(401).json({ error: "Utilisateur non authentifié" });
       return;
@@ -162,9 +162,9 @@ export class GymController {
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async getMyApprovedRequests(req: Request, res: Response) {
+  getMyApprovedRequests = async (req: Request, res: Response) => {
     if (!req.user) {
       res.status(401).json({ error: "Utilisateur non authentifié" });
       return;
@@ -182,9 +182,9 @@ export class GymController {
         message: "Erreur lors de la récupération des demandes approuvées.",
       });
     }
-  }
+  };
 
-  async getMyRejectedRequests(req: Request, res: Response) {
+  getMyRejectedRequests = async (req: Request, res: Response) => {
     if (!req.user) {
       res.status(401).json({ error: "Utilisateur non authentifié" });
       return;
@@ -202,9 +202,9 @@ export class GymController {
         message: "Erreur lors de la récupération des demandes rejetées.",
       });
     }
-  }
+  };
 
-  async getAllPendingRequests(req: Request, res: Response) {
+  getAllPendingRequests = async (req: Request, res: Response) => {
     if (!req.user) {
       res.status(401).json({ error: "Utilisateur non authentifié" });
       return;
@@ -219,9 +219,9 @@ export class GymController {
         message: "Erreur lors de la récupération des demandes rejetées.",
       });
     }
-  }
+  };
 
-  buildRouter(): Router {
+  buildRouter = (): Router => {
     const router = Router();
 
     router.post(
@@ -321,5 +321,5 @@ export class GymController {
     );
 
     return router;
-  }
+  };
 }

@@ -10,7 +10,7 @@ export class ChallengeController {
     public readonly sessionService: SessionService
   ) {}
 
-  async createChallengeOwner(req: Request, res: Response) {
+  createChallengeOwner = async (req: Request, res: Response) => {
     if (!req.body) {
       res.status(400).end();
       return;
@@ -37,9 +37,9 @@ export class ChallengeController {
     } catch (error) {
       res.status(409).end();
     }
-  }
+  };
 
-  async createChallengeClient(req: Request, res: Response) {
+  createChallengeClient = async (req: Request, res: Response) => {
     if (!req.body) {
       res.status(400).end();
       return;
@@ -65,9 +65,9 @@ export class ChallengeController {
     } catch {
       res.status(409).end();
     }
-  }
+  };
 
-  async updateChallenge(req: Request, res: Response) {
+  updateChallenge = async (req: Request, res: Response) => {
     if (!req.body) {
       res.status(400).end();
       return;
@@ -91,9 +91,9 @@ export class ChallengeController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async deleteChallenge(req: Request, res: Response) {
+  deleteChallenge = async (req: Request, res: Response) => {
     if (!req.user) {
       res.status(401).json({ error: "Utilisateur non authentifié" });
       return;
@@ -106,9 +106,9 @@ export class ChallengeController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async getMyChallenges(req: Request, res: Response) {
+  getMyChallenges = async (req: Request, res: Response) => {
     if (!req.user) {
       res.status(401).json({ error: "Utilisateur non authentifié" });
       return;
@@ -122,9 +122,9 @@ export class ChallengeController {
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async getMyChallengesByGym(req: Request, res: Response) {
+  getMyChallengesByGym = async (req: Request, res: Response) => {
     if (!req.user) {
       res.status(401).json({ error: "Utilisateur non authentifié" });
       return;
@@ -138,15 +138,15 @@ export class ChallengeController {
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async exploreChallenge(req: Request, res: Response) {
+  exploreChallenge = async (req: Request, res: Response) => {
     if (!req.user) {
       res.status(401).json({ error: "Utilisateur non authentifié" });
       return;
     }
 
-    const { difficulty, exercise, duration } = req.query;
+    const { difficulty, exercise } = req.query;
 
     try {
       const filters = {
@@ -159,9 +159,9 @@ export class ChallengeController {
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  buildRouter(): Router {
+  buildRouter = (): Router => {
     const router = Router();
 
     router.get(
@@ -217,5 +217,5 @@ export class ChallengeController {
     );
 
     return router;
-  }
+  };
 }

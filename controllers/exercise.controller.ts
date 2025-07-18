@@ -9,7 +9,7 @@ export class ExerciseController {
     public readonly sessionService: SessionService
   ) {}
 
-  async createExercise(req: Request, res: Response) {
+  createExercise = async (req: Request, res: Response) => {
     if (!req.body) {
       res.status(400).end();
       return;
@@ -24,11 +24,11 @@ export class ExerciseController {
       });
       res.status(201).json(exercise);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
-  }
+  };
 
-  async updateExercise(req: Request, res: Response) {
+  updateExercise = async (req: Request, res: Response) => {
     try {
       const exeId = req.params.id;
       const updateData = req.body;
@@ -42,9 +42,9 @@ export class ExerciseController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async deleteExercise(req: Request, res: Response) {
+  deleteExercise = async (req: Request, res: Response) => {
     try {
       const exeId = req.params.id;
       await this.exerciseService.deleteExercise(exeId);
@@ -52,18 +52,18 @@ export class ExerciseController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async getAllExercises(req: Request, res: Response) {
+  getAllExercises = async (_req: Request, res: Response) => {
     try {
       const exercises = await this.exerciseService.findAllExercises();
       res.status(200).json(exercises);
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async getExerciseById(req: Request, res: Response) {
+  getExerciseById = async (req: Request, res: Response) => {
     try {
       const exeId = req.params.id;
       const exercise = await this.exerciseService.findExerciseById(exeId);
@@ -77,9 +77,9 @@ export class ExerciseController {
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  buildRouter(): Router {
+  buildRouter = (): Router => {
     const router = Router();
 
     router.post(
@@ -120,5 +120,5 @@ export class ExerciseController {
     );
 
     return router;
-  }
+  };
 }

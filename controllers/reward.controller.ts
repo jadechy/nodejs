@@ -9,7 +9,7 @@ export class RewardController {
     public readonly sessionService: SessionService
   ) {}
 
-  async createReward(req: Request, res: Response) {
+  createReward = async (req: Request, res: Response) => {
     if (!req.body) {
       res.status(400).end();
       return;
@@ -23,11 +23,11 @@ export class RewardController {
       });
       res.status(201).json(reward);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
-  }
+  };
 
-  async updateReward(req: Request, res: Response) {
+  updateReward = async (req: Request, res: Response) => {
     try {
       const rewardId = req.params.id;
       const updateData = req.body;
@@ -41,9 +41,9 @@ export class RewardController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async deleteReward(req: Request, res: Response) {
+  deleteReward = async (req: Request, res: Response) => {
     try {
       const rewardId = req.params.id;
       await this.rewardService.deleteReward(rewardId);
@@ -51,18 +51,18 @@ export class RewardController {
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async getAllRewards(req: Request, res: Response) {
+  getAllRewards = async (_req: Request, res: Response) => {
     try {
       const rewards = await this.rewardService.findAllRewards();
       res.status(200).json(rewards);
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  async getRewardById(req: Request, res: Response) {
+  getRewardById = async (req: Request, res: Response) => {
     try {
       const rewardId = req.params.id;
       const reward = await this.rewardService.findRewardById(rewardId);
@@ -76,9 +76,9 @@ export class RewardController {
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
-  }
+  };
 
-  buildRouter(): Router {
+  buildRouter = (): Router => {
     const router = Router();
 
     router.post(
@@ -119,5 +119,5 @@ export class RewardController {
     );
 
     return router;
-  }
+  };
 }
