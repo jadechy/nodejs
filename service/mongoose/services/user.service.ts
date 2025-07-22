@@ -136,4 +136,36 @@ export class UserService {
         return user.rewards;
     }
 
+    async getUserRankingByBadges() {
+        const users = await this.userModel.aggregate([
+            {
+                $project: {
+                    firstName: 1,
+                    lastName: 1,
+                    email: 1,
+                    badgeCount: { $size: { $ifNull: ["$badges", []] } }
+                }
+            },
+            { $sort: { badgeCount: -1 } }
+        ]);
+
+        return users;
+    }
+
+    async getUserRankingByRewards() {
+        const users = await this.userModel.aggregate([
+            {
+                $project: {
+                    firstName: 1,
+                    lastName: 1,
+                    email: 1,
+                    rewardCount: { $size: { $ifNull: ["$rewards", []] } }
+                }
+            },
+            { $sort: { rewardCount: -1 } }
+        ]);
+
+        return users;
+    }
+
 }

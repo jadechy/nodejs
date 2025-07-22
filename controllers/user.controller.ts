@@ -84,6 +84,24 @@ export class UserController {
         }
     }
 
+    async getRankingByBadges(req: Request, res: Response) {
+        try {
+            const ranking = await this.userService.getUserRankingByBadges();
+            res.status(200).json(ranking);
+        } catch (error) {
+            res.status(500).json({ error: (error as Error).message });
+        }
+    }
+
+    async getRankingByRewards(req: Request, res: Response) {
+        try {
+            const ranking = await this.userService.getUserRankingByRewards();
+            res.status(200).json(ranking);
+        } catch (error) {
+            res.status(500).json({ error: (error as Error).message });
+        }
+    }
+
     buildRouter(): Router {
         const router = Router();
         router.post('/',
@@ -104,6 +122,20 @@ export class UserController {
             roleMiddleware(UserRole.CLIENT),
             json(),
             this.getUserRewards.bind(this)
+        );
+
+        router.get('/ranking/badges',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.CLIENT),
+            json(),
+            this.getRankingByBadges.bind(this)
+        );
+
+        router.get('/ranking/rewards',
+            sessionMiddleware(this.sessionService),
+            roleMiddleware(UserRole.CLIENT),
+            json(),
+            this.getRankingByRewards.bind(this)
         );
         
         router.put('/:id',
