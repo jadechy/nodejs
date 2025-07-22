@@ -124,4 +124,48 @@ export class UserService {
         }
     }
 
+    async getUserBadges(userId: string) {
+        const user = await this.userModel.findById(userId).populate('badges').exec();
+        if (!user) throw new Error('Utilisateur non trouvé');
+        return user.badges;
+    }
+
+    async getUserRewards(userId: string) {
+        const user = await this.userModel.findById(userId).populate('rewards').exec();
+        if (!user) throw new Error('Utilisateur non trouvé');
+        return user.rewards;
+    }
+
+    async getUserRankingByBadges() {
+        const users = await this.userModel.aggregate([
+            {
+                $project: {
+                    firstName: 1,
+                    lastName: 1,
+                    email: 1,
+                    badgeCount: { $size: { $ifNull: ["$badges", []] } }
+                }
+            },
+            { $sort: { badgeCount: -1 } }
+        ]);
+
+        return users;
+    }
+
+    async getUserRankingByRewards() {
+        const users = await this.userModel.aggregate([
+            {
+                $project: {
+                    firstName: 1,
+                    lastName: 1,
+                    email: 1,
+                    rewardCount: { $size: { $ifNull: ["$rewards", []] } }
+                }
+            },
+            { $sort: { rewardCount: -1 } }
+        ]);
+
+        return users;
+    }
+
 }
