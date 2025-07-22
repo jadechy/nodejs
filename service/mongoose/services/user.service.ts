@@ -124,4 +124,16 @@ export class UserService {
         }
     }
 
+    async getUserBadges(userId: string) {
+        const user = await this.userModel.findById(userId).populate('badges').exec();
+        if (!user) throw new Error('Utilisateur non trouvé');
+        return user.badges;
+    }
+
+    async getUserRewards(userId: string) {
+        const user = await this.userModel.findById(userId).populate('rewards').exec();
+        if (!user) throw new Error('Utilisateur non trouvé');
+        return user.rewards;
+    }
+
 }
