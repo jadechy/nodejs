@@ -5,6 +5,7 @@ import {Timestamps} from "./timestamps";
 export enum UserRole {
     ADMIN = 'ADMIN',
     OWNER = 'OWNER',
+    COACH = 'COACH',
     CLIENT = 'CLIENT'
 }
 
@@ -13,6 +14,8 @@ export function getUserRoleLevel(role: UserRole): number {
         case UserRole.ADMIN:
             return 999;
         case UserRole.OWNER:
+            return 2;
+        case UserRole.COACH:
             return 1;
         default:
             return 0;

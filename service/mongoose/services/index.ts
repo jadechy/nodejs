@@ -8,3 +8,4 @@ export * from './challenge.service';
 export * from './share.service';
 export * from './training.service';
 export * from './challengematch.service';
+export * from './coaching.service';

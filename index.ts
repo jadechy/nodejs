@@ -1,8 +1,9 @@
 import dotenv from 'dotenv';
 import express from "express";
-import {openConnection, SessionService, UserService, GymService, ExerciseService, BadgeService, RewardService, ChallengeService, ShareService, TrainingService, ChallengeMatchService} from "./service/mongoose";
+import {openConnection, SessionService, UserService, GymService, ExerciseService, BadgeService, RewardService, ChallengeService, ShareService, TrainingService, ChallengeMatchService, CoachingService} from "./service/mongoose";
 import {UserRole} from "./models/user.interface";
 import { AuthController, UserController, GymController, ExerciseController, BadgeController, RewardController, ChallengeController, ShareController, TrainingController, ChallengeMatchController} from "./controllers";
+import { CoachingController } from './controllers/coaching.controller';
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ async function startAPI() {
     const shareService = new ShareService(connection);
     const trainingService = new TrainingService(connection, userService);
     const challengeMatchService = new ChallengeMatchService(connection);
+    const coachingService = new CoachingService(connection);
     const sessionService = new SessionService(connection);
     await bootstrapAPI(userService);
     const app = express();
@@ -40,6 +42,8 @@ async function startAPI() {
     app.use('/training', trainingController.buildRouter());
     const challengeMatchController = new ChallengeMatchController(challengeMatchService, sessionService);
     app.use('/match', challengeMatchController.buildRouter());
+    const coachingController = new CoachingController(coachingService, sessionService);
+    app.use('/coaching', coachingController.buildRouter());
     app.listen(process.env.PORT, () => console.log(`API listening on port ${process.env.PORT}...`))
 }
 

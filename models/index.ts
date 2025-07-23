@@ -9,3 +9,4 @@ export * from './challenge.interface';
 export * from './share.interface';
 export * from './training.interface';
 export * from './challengematch.interface';
+export * from './coaching.interface';
