@@ -17,5 +17,9 @@ export function exerciseSchema(): Schema<Exercise> {
             required: true
         },
         equipments: [{ type: String }],
-    })
+    }, {
+        timestamps: true, // createdAt + updatedAt
+        collection: "exercise",
+        versionKey: false, // désactive le versionning de model
+    });
 }
