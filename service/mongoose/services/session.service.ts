@@ -1,28 +1,29 @@
-import {Mongoose, Model, isValidObjectId} from "mongoose";
-import {Session} from "../../../models/session.interface";
-import {sessionSchema} from "../schema/session.schema";
+import { Mongoose, Model, isValidObjectId } from "mongoose";
+import { Session } from "../../../models/session.interface";
+import { sessionSchema } from "../schema/session.schema";
 
-export type CreateSession = Omit<Session, '_id' | 'createdAt' | 'updatedAt'>;
+export type CreateSession = Omit<Session, "_id" | "createdAt" | "updatedAt">;
 
 export class SessionService {
+  readonly sessionModel: Model<Session>;
 
-    readonly sessionModel: Model<Session>;
+  constructor(public readonly connection: Mongoose) {
+    this.sessionModel = connection.model("Session", sessionSchema());
+  }
 
-    constructor(public readonly connection: Mongoose) {
-        this.sessionModel = connection.model('Session', sessionSchema());
+  async createSession(session: CreateSession): Promise<Session> {
+    return this.sessionModel.create(session);
+  }
+
+  async findActiveSession(sessionId: string): Promise<Session | null> {
+    if (!isValidObjectId(sessionId)) {
+      return null;
     }
-
-    async createSession(session: CreateSession): Promise<Session> {
-        return this.sessionModel.create(session);
-    }
-
-    async findActiveSession(sessionId: string): Promise<Session | null> {
-        if(!isValidObjectId(sessionId)) {
-            return null;
-        }
-        const session = this.sessionModel.findOne({
-            _id: sessionId,
-        }).populate('user'); // populate permet de charger un objet d'une autre collection a partir de son id
-        return session;
-    }
+    const session = this.sessionModel
+      .findOne({
+        _id: sessionId,
+      })
+      .populate("user");
+    return session;
+  }
 }

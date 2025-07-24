@@ -6,11 +6,12 @@ export function shareSchema(): Schema<Share> {
     {
       from: { type: Types.ObjectId, ref: "User", required: true },
       to: { type: Types.ObjectId, ref: "User", required: true },
-      challenge: { type: Types.ObjectId, ref: "Challenge", required: true }
-    }, {
-        timestamps: true, // createdAt + updatedAt
-        collection: "share",
-        versionKey: false, // désactive le versionning de model
+      challenge: { type: Types.ObjectId, ref: "Challenge", required: true },
+    },
+    {
+      timestamps: true,
+      collection: "share",
+      versionKey: false,
     }
   );
 }
