@@ -1,21 +1,15 @@
 import {Mongoose, Model, FilterQuery, isValidObjectId} from "mongoose";
-import {Gym, GymRequest, GymRequestStatus, User} from "../../../models";
+import {Gym, GymStatus, User} from "../../../models";
 import {gymSchema} from "../schema/gym.schema";
-import {gymRequestSchema} from "../schema/gymrequest.schema";
 
 export type CreateGym = Omit<Gym, '_id' | 'createdAt' | 'updatedAt'>;
 export type UpdateGym = Partial<Omit<Gym, '_id' | 'createdAt'>>;
 
-export type CreateGymRequest = Omit<GymRequest, '_id' | 'createdAt' | 'updatedAt'>;
-export type UpdateGymRequest = Partial<Omit<GymRequest, '_id' | 'createdAt'>>;
-
 export class GymService{
     readonly gymModel: Model<Gym>;
-    readonly gymRequestModel: Model<GymRequest>;
 
     constructor(public readonly connection: Mongoose) {
         this.gymModel = connection.model('Gym', gymSchema());
-        this.gymRequestModel = connection.model('GymRequest', gymRequestSchema());
     }
 
     async findAllGyms(): Promise<Gym[]> {
@@ -31,13 +25,16 @@ export class GymService{
         return this.gymModel.findById(id);
     }
 
-    async createGym(gym: CreateGym): Promise<Gym> {
-        return this.gymModel.create({...gym});
+    async createGym(gymData: CreateGym, createdBy: User): Promise<Gym> {
+        const isAdmin = createdBy.role === 'ADMIN';
+
+        return this.gymModel.create({
+            ...gymData,
+            requestedBy: isAdmin ? undefined : createdBy,
+            status: isAdmin ? GymStatus.APPROVED : GymStatus.PENDING
+        });
     }
 
-    async createGymRequest(gymRequest: CreateGymRequest) {
-        return this.gymRequestModel.create({...gymRequest});
-    }
 
     async updateGym(gymId: string, updateData: UpdateGym): Promise<Gym> {
         if (!isValidObjectId(gymId)) {
@@ -61,11 +58,11 @@ export class GymService{
         return updated;
     }
 
-    async updateGymRequestStatus(gymId: string, status: string): Promise<void> {
+    async updateGymStatus(gymId: string, status: string): Promise<void> {
         if(!isValidObjectId(gymId)) {
             return;
         }
-        await this.gymRequestModel.updateOne({
+        await this.gymModel.updateOne({
             _id: gymId
         }, {
             status: status
@@ -84,30 +81,18 @@ export class GymService{
         }
     }
 
-    async deleteGymRequest(gymId: string): Promise<void> {
-        if (!isValidObjectId(gymId)) {
-            throw new Error("ID gym invalide.");
-        }
-
-        const result = await this.gymRequestModel.findByIdAndDelete(gymId);
-
-        if (!result) {
-            throw new Error("Salle non trouvé.");
-        }
+    async findAllGymByUser(userId: string): Promise<GymStatus[]> {
+        return this.gymModel.find({ requestedBy: userId });
     }
 
-    async findAllGymRequestsByUser(userId: string): Promise<GymRequest[]> {
-        return this.gymRequestModel.find({ requestedBy: userId });
-    }
-
-    async findGymRequestsByUserAndStatus(userId: string, status: GymRequestStatus): Promise<GymRequest[]> {
-        return this.gymRequestModel.find({
+    async findGymByUserAndStatus(userId: string, status: GymStatus): Promise<GymStatus[]> {
+        return this.gymModel.find({
             requestedBy: userId,
             status
         });
     }
 
-    async findGymRequestsByStatus(status: GymRequestStatus): Promise<GymRequest[]> {
-        return this.gymRequestModel.find({status});
+    async findGymByStatus(status: GymStatus): Promise<GymStatus[]> {
+        return this.gymModel.find({status});
     }
 }
