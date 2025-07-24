@@ -29,7 +29,7 @@ export class TrainingController {
       });
       res.status(201).json(training);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
   }
 

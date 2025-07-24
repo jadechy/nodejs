@@ -39,7 +39,7 @@ export class GymController {
       );
       res.status(201).json(gym);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
   }
 
@@ -138,11 +138,9 @@ export class GymController {
       );
       res.status(200).json(approvedRequests);
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Erreur lors de la récupération des demandes approuvées.",
-        });
+      res.status(500).json({
+        message: "Erreur lors de la récupération des demandes approuvées.",
+      });
     }
   }
 
@@ -159,11 +157,9 @@ export class GymController {
       );
       res.status(200).json(rejectedRequests);
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Erreur lors de la récupération des demandes rejetées.",
-        });
+      res.status(500).json({
+        message: "Erreur lors de la récupération des demandes rejetées.",
+      });
     }
   }
 
@@ -178,11 +174,9 @@ export class GymController {
       );
       res.status(200).json(pendingRequests);
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Erreur lors de la récupération des demandes rejetées.",
-        });
+      res.status(500).json({
+        message: "Erreur lors de la récupération des demandes rejetées.",
+      });
     }
   }
 

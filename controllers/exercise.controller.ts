@@ -24,7 +24,7 @@ export class ExerciseController {
       });
       res.status(201).json(exercise);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
   }
 

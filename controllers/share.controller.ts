@@ -26,7 +26,7 @@ export class ShareController {
       });
       res.status(201).json(share);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
   }
 
@@ -40,7 +40,7 @@ export class ShareController {
       const shares = await this.shareService.getAllMyShare(userId);
       res.status(201).json(shares);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
   }
 

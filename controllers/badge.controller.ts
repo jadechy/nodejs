@@ -22,7 +22,7 @@ export class BadgeController {
       });
       res.status(201).json(badge);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
   }
 

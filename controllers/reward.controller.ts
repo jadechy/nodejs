@@ -23,7 +23,7 @@ export class RewardController {
       });
       res.status(201).json(reward);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
   }
 

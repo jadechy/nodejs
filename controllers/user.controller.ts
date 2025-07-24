@@ -33,7 +33,7 @@ export class UserController {
       });
       res.status(201).json(user);
     } catch {
-      res.status(409).end(); // CONFLICT
+      res.status(409).end();
     }
   }
 
