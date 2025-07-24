@@ -1,5 +1,11 @@
 import {Timestamps} from "./timestamps";
+import { User } from "./user.interface";
 
+export enum GymStatus {
+    PENDING = 'PENDING',
+    APPROVED = 'APPROVED',
+    REJECTED = 'REJECTED'
+}
 export interface Gym extends Timestamps {
     _id: string;
     name: string;
@@ -24,4 +30,6 @@ export interface Gym extends Timestamps {
         email: string;
         website: string;
     };
+    requestedBy?: User;
+    status: GymStatus;
 }

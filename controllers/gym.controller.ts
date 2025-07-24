@@ -2,7 +2,7 @@ import {SessionService, GymService} from "../service/mongoose";
 import {Request, Response, Router, json} from "express";
 import {roleMiddleware, sessionMiddleware} from "../middlewares";
 import {UserRole} from "../models/user.interface";
-import { GymRequestStatus } from "../models";
+import { GymStatus } from "../models";
 
 export class GymController{
     constructor(public readonly gymService: GymService,
@@ -11,6 +11,10 @@ export class GymController{
     async createGym(req: Request, res: Response) {
         if(!req.body) {
             res.status(400).end();
+            return;
+        }
+        if (!req.user) {
+            res.status(401).json({ error: "Utilisateur non authentifié" });
             return;
         }
         try {
@@ -25,7 +29,9 @@ export class GymController{
                 address: req.body.address,
                 coachCount: req.body.coachCount,
                 contact: req.body.contact,
-            });
+                requestedBy: req.user,
+                status: req.body.status
+            }, req.user);
             res.status(201).json(gym);
         } catch {
             res.status(409).end(); // CONFLICT
@@ -80,52 +86,10 @@ export class GymController{
         }
     }
 
-    async createGymRequest(req: Request, res: Response) {
-        if(!req.body) {
-            res.status(400).end();
-            return;
-        }
-
-        if (!req.user) {
-            res.status(401).json({ error: "Utilisateur non authentifié" });
-            return;
-        }
-
-        try {
-            const gym = await this.gymService.createGymRequest({
-                requestedBy: req.user,
-                name: req.body.name,
-                capacity: req.body.capacity,
-                equipments: req.body.equipments,
-                installations: req.body.installations,
-                activities: req.body.activities,
-                openingHours: req.body.openingHours,
-                pricing: req.body.pricing,
-                address: req.body.address,
-                coachCount: req.body.coachCount,
-                contact: req.body.contact,
-                status: GymRequestStatus.PENDING
-            });
-            res.status(201).json(gym);
-        } catch {
-            res.status(409).end(); // CONFLICT
-        }
-    }
-
-    async deleteGymRequest(req: Request, res: Response) {
-        try {
-            const gymId = req.params.id;
-            await this.gymService.deleteGymRequest(gymId);
-            res.status(204).end()
-        } catch (error) {
-            res.status(400).json({ error: (error as Error).message });
-        }
-    }
-
     async approveGymRequest(req: Request, res: Response){
         try {
             const gymId = req.params.id;
-            await this.gymService.updateGymRequestStatus(gymId, GymRequestStatus.APPROVED);
+            await this.gymService.updateGymStatus(gymId, GymStatus.APPROVED);
             res.status(204).end()
         } catch (error) {
             res.status(400).json({ error: (error as Error).message });
@@ -135,7 +99,7 @@ export class GymController{
     async rejectGymRequest(req: Request, res: Response){
         try {
             const gymId = req.params.id;
-            await this.gymService.updateGymRequestStatus(gymId, GymRequestStatus.REJECTED);
+            await this.gymService.updateGymStatus(gymId, GymStatus.REJECTED);
             res.status(204).end()
         } catch (error) {
             res.status(400).json({ error: (error as Error).message });
@@ -149,7 +113,7 @@ export class GymController{
         }
         try {
             const userId = req.user._id;
-            const gyms = await this.gymService.findAllGymRequestsByUser(userId);
+            const gyms = await this.gymService.findAllGymByUser(userId);
             res.status(200).json(gyms);
         } catch (error) {
             res.status(500).json({ error: (error as Error).message });
@@ -163,7 +127,7 @@ export class GymController{
         }
         try {
             const userId = req.user._id;
-            const approvedRequests = await this.gymService.findGymRequestsByUserAndStatus(userId, GymRequestStatus.APPROVED);
+            const approvedRequests = await this.gymService.findGymByUserAndStatus(userId, GymStatus.APPROVED);
             res.status(200).json(approvedRequests);
         } catch (err) {
             res.status(500).json({ message: 'Erreur lors de la récupération des demandes approuvées.' });
@@ -177,7 +141,7 @@ export class GymController{
         }
         try {
             const userId = req.user._id;
-            const rejectedRequests = await this.gymService.findGymRequestsByUserAndStatus(userId, GymRequestStatus.REJECTED);
+            const rejectedRequests = await this.gymService.findGymByUserAndStatus(userId, GymStatus.REJECTED);
             res.status(200).json(rejectedRequests);
         } catch (err) {
             res.status(500).json({ message: 'Erreur lors de la récupération des demandes rejetées.' });
@@ -190,7 +154,7 @@ export class GymController{
             return;
         }
         try {
-            const pendingRequests = await this.gymService.findGymRequestsByStatus( GymRequestStatus.PENDING);
+            const pendingRequests = await this.gymService.findGymByStatus( GymStatus.PENDING);
             res.status(200).json(pendingRequests);
         } catch (err) {
             res.status(500).json({ message: 'Erreur lors de la récupération des demandes rejetées.' });
@@ -199,19 +163,6 @@ export class GymController{
 
     buildRouter(): Router {
         const router = Router();
-
-        router.post('/request',
-            sessionMiddleware(this.sessionService),
-            roleMiddleware(UserRole.OWNER),
-            json(),
-            this.createGymRequest.bind(this)
-        );
-
-        router.delete('/request/:id',
-            sessionMiddleware(this.sessionService),
-            roleMiddleware(UserRole.OWNER),
-            this.deleteGymRequest.bind(this)
-        );
 
         router.get('/request',
             sessionMiddleware(this.sessionService),
@@ -233,7 +184,7 @@ export class GymController{
 
         router.post('/',
             sessionMiddleware(this.sessionService),
-            roleMiddleware(UserRole.ADMIN),
+            roleMiddleware(UserRole.OWNER),
             json(),
             this.createGym.bind(this)
         );

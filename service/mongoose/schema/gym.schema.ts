@@ -1,5 +1,5 @@
-import {Schema} from "mongoose";
-import {Gym} from "../../../models/gym.interface";
+import {Schema, Types} from "mongoose";
+import {Gym, GymStatus} from "../../../models/gym.interface";
 
 export function gymSchema(): Schema<Gym> {
     return new Schema<Gym>({
@@ -33,6 +33,12 @@ export function gymSchema(): Schema<Gym> {
             phone: { type: String},
             email: { type: String},
             website: { type: String},
+        },
+        requestedBy: {type: Types.ObjectId, ref: "User", required: false},
+        status: {
+            type: String,
+            required: true,
+            enum: Object.values(GymStatus)
         }
     }, {
         timestamps: true, // createdAt + updatedAt
